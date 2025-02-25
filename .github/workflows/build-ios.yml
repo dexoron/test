@@ -38,3 +38,13 @@ jobs:
 
       - name: Build Tauri iOS app
         run: pnpm tauri ios build
+
+      - name: Find the .ipa file
+        run: |
+          echo "IPA_PATH=$(find src-tauri/gen/apple/target -name '*.ipa' | head -n 1)" >> $GITHUB_ENV
+
+      - name: Upload .ipa file
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app
+          path: ${{ env.IPA_PATH }}

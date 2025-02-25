@@ -46,9 +46,6 @@ jobs:
           sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
           sudo xcodebuild -license accept
 
-      - name: Clean Xcode project
-        run: xcodebuild clean
-
       - name: Initialize Tauri iOS project
         run: pnpm tauri ios init
 

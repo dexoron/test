@@ -14,7 +14,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: my-app  # Указываем путь к проекту
+        working-directory: my-app # Указываем путь к проекту
 
     steps:
       - name: Checkout repository
@@ -23,15 +23,23 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Cache pnpm dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.pnpm-store
+            node_modules
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
+
       - name: Install dependencies
         run: |
           brew install node
           npm install -g pnpm
           rustup target add aarch64-apple-ios x86_64-apple-ios
           cargo install tauri-cli
-
-      - name: Install project dependencies
-        run: pnpm install
+          pnpm install  # Установка зависимостей
 
       - name: Setup Xcode
         run: |
@@ -45,7 +53,7 @@ jobs:
         run: pnpm tauri ios init
 
       - name: Build Tauri iOS app (Release)
-        run: pnpm tauri ios build --release  # Строим для реального устройства
+        run: pnpm tauri ios build --release # Строим для реального устройства
 
       - name: Find the .ipa file
         run: |

@@ -1,4 +1,4 @@
-name: Build Tauri iOS App
+name: Build Tauri iOS App for AltStore
 
 on:
   push:
@@ -14,7 +14,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: my-app # Указываем путь к проекту
+        working-directory: my-app  # Указываем путь к проекту
 
     steps:
       - name: Checkout repository
@@ -33,11 +33,19 @@ jobs:
       - name: Install project dependencies
         run: pnpm install
 
+      - name: Setup Xcode
+        run: |
+          sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
+          sudo xcodebuild -license accept
+
+      - name: Clean Xcode project
+        run: xcodebuild clean
+
       - name: Initialize Tauri iOS project
         run: pnpm tauri ios init
 
-      - name: Build Tauri iOS app
-        run: pnpm tauri ios build
+      - name: Build Tauri iOS app (Release)
+        run: pnpm tauri ios build --release  # Строим для реального устройства
 
       - name: Find the .ipa file
         run: |
